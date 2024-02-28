@@ -10,14 +10,23 @@ paths:
             responses:
                 200:
                     description: List of all foods OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FoodListDTO'
         post:
             description: Add new food
-            #            Add param requst
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/FoodDTO'
             responses:
                 201:
                     description: Food successfully created
                 400:
-                    description: Incorrect payload
+                    $ref: '#/components/responses/IncorrectPayload'
                 500:
                     description: Data could not be processed
     /v1/foods/{id}:
@@ -36,22 +45,26 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Food'
-                400:
-                    $ref: '#/components/responses/IncorrectIdForm'
+                                $ref: '#/components/schemas/FoodDTO'
                 404:
                     $ref: '#/components/responses/ResourceNotFound'
         put:
             description: Update the corresponding food
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/FoodDTO'
             responses:
                 200:
                     description: Food was successfully updated
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Food'
+                                $ref: '#/components/schemas/FoodDTO'
                 400:
-                    $ref: '#/components/responses/IncorrectIdFormOrPayload'
+                    $ref: '#/components/responses/IncorrectPayload'
                 404:
                     $ref: '#/components/responses/ResourceNotFound'
         delete:
@@ -59,21 +72,49 @@ paths:
             responses:
                 204:
                     description: Successfully deletes the corresponding food
-                400:
-                    description: Incorrect ID form
                 404:
-                    description: Resource not found
+                    $ref: '#/components/responses/ResourceNotFound'
 
 components:
     schemas:
-        Food:
+        FoodDTO:
             type: object
             properties:
-            # Define properties
+                id:
+                    type: integer
+                    nullable: false
+                name:
+                    type: string
+                    nullable: false
+                ingestion:
+                    type: string
+                    enum:
+                        - drink
+                        - eat
+                carbs:
+                    type: integer
+                    nullable: true
+                calories:
+                    type: integer
+                    nullable: true
+                protein:
+                    type: integer
+                    nullable: true
+                electrolytes:
+                    type: boolean
+                    nullable: false
+                comment:
+                    type: string
+                    nullable: true
+        FoodListDTO:
+            type: object
+            properties:
+                foods:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/FoodDTO'
     responses:
-        IncorrectIdForm:
-            description: Incorrect ID form
-        IncorrectIdFormOrPayload:
-            description: Incorrect ID form or payload
+        IncorrectPayload:
+            description: Incorrect payload
         ResourceNotFound:
             description: Resource not found
