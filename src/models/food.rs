@@ -9,7 +9,7 @@ pub struct Food {
     pub(crate) comment: String
 }
 
-enum IngestionType {
+pub(crate) enum IngestionType {
     EAT,
     DRINK
 }

@@ -1,7 +1,9 @@
+use crate::models::food::IngestionType;
 use crate::dto::food_list_dto::FoodListDTO;
 use crate::models::food::Food;
 mod dto;
 mod models;
+mod repositories;
 
 fn main() {
     println!("Hello, world!");
