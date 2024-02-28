@@ -97,7 +97,7 @@ components:
                 calories:
                     type: integer
                     nullable: true
-                protein:
+                proteins:
                     type: integer
                     nullable: true
                 electrolytes:
