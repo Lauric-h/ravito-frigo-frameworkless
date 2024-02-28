@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+    description: Ravito's Frigo API
+    version: 1.0.0
+    title: Frigo API
+paths:
+    /v1/foods:
+        get:
+            description: List all foods
+            responses:
+                200:
+                    description: List of all foods OK
+        post:
+            description: Add new food
+            #            Add param requst
+            responses:
+                201:
+                    description: Food successfully created
+                400:
+                    description: Incorrect payload
+                500:
+                    description: Data could not be processed
+    /v1/foods/{id}:
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+                  type: integer
+              description: ID of corresponding food
+        get:
+            description: Retrieve the corresponding food
+            responses:
+                200:
+                    description: Retrieve the corresponding food
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Food'
+                400:
+                    $ref: '#/components/responses/IncorrectIdForm'
+                404:
+                    $ref: '#/components/responses/ResourceNotFound'
+        put:
+            description: Update the corresponding food
+            responses:
+                200:
+                    description: Food was successfully updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Food'
+                400:
+                    $ref: '#/components/responses/IncorrectIdFormOrPayload'
+                404:
+                    $ref: '#/components/responses/ResourceNotFound'
+        delete:
+            description: Removes the corresponding food
+            responses:
+                204:
+                    description: Successfully deletes the corresponding food
+                400:
+                    description: Incorrect ID form
+                404:
+                    description: Resource not found
+
+components:
+    schemas:
+        Food:
+            type: object
+            properties:
+            # Define properties
+    responses:
+        IncorrectIdForm:
+            description: Incorrect ID form
+        IncorrectIdFormOrPayload:
+            description: Incorrect ID form or payload
+        ResourceNotFound:
+            description: Resource not found
