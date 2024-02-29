@@ -7,21 +7,23 @@ mod dto;
 mod models;
 mod repositories;
 
+const SERVER_ADDRESS: &str = "0.0.0.0";
+const SERVER_PORT: &str = "8081";
+
 fn main() {
-    let listener = TcpListener::bind(format!("0.0.0.0:8081")).unwrap();
-    println!("Server listening on port 8080");
+    let listener = TcpListener::bind(format!("{}:{}", SERVER_ADDRESS, SERVER_PORT).to_string()).unwrap();
+    println!("Server listening on port {}", SERVER_PORT);
 
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                println!("OK stream");
+                handle_client(stream);
             }
             Err(e) => {
                 println!("Error: {}", e);
             }
         }
     }
-
 }
 
 fn handle_client(mut stream: TcpStream) {
@@ -33,7 +35,10 @@ fn handle_client(mut stream: TcpStream) {
             request.push_str(String::from_utf8_lossy(&buffer[..size]).as_ref());
 
             let content = match &*request {
-                r if r.starts_with("GET /health") => "get".to_string(),
+                r if r.starts_with("GET /health") => {
+                    println!("Received request to /health");
+                    "Health check OK".to_string()
+                },
                 _ => "Not found".to_string()
             };
             stream.write_all(format!("{}", content).as_bytes()).unwrap();
