@@ -9,6 +9,8 @@ mod repositories;
 
 const SERVER_ADDRESS: &str = "0.0.0.0";
 const SERVER_PORT: &str = "8081";
+const OK_RESPONSE: &str = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
+const NOT_FOUND_RESPONSE: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
 
 fn main() {
     let listener = TcpListener::bind(format!("{}:{}", SERVER_ADDRESS, SERVER_PORT).to_string()).unwrap();
@@ -49,16 +51,16 @@ fn handle_client(mut stream: TcpStream) {
         Ok(size) => {
             request.push_str(String::from_utf8_lossy(&buffer[..size]).as_ref());
 
-            let content = match &*request {
-                r if r.starts_with("GET /health") => {
-                    println!("Received request to /health");
-                    "Health check OK".to_string()
-
-                },
-                _ => "Not found".to_string()
+            let (status_line, content) = match &*request {
+                r if r.starts_with("GET /ping") => handle_ping(),
+                _ => (NOT_FOUND_RESPONSE.to_string(), "404 Not found".to_string())
             };
-            stream.write_all(format!("{}", content).as_bytes()).unwrap();
+            stream.write_all(format!("{}{}", status_line, content).as_bytes()).unwrap();
         }
         Err(e) => eprintln!("Unable to read stream: {}", e),
     }
+}
+
+fn handle_ping() -> (String, String) {
+    (OK_RESPONSE.to_string(), String::from("pong"))
 }
