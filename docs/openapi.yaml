@@ -4,6 +4,16 @@ info:
     version: 1.0.0
     title: Frigo API
 paths:
+    /ping:
+        get:
+            description: Pong
+            responses:
+                200:
+                    description: Pong
+                    content:
+                        application/json:
+                            schema:
+                                type: string
     /v1/foods:
         get:
             description: List all foods
