@@ -1,13 +1,13 @@
 use crate::models::food::*;
 
-trait Repository {
+pub trait Repository {
     fn get(&self, id: i32) -> Result<Food, ()>;
     fn get_all(&self) -> Result<Vec<Food>, ()>;
     fn save(&self, food: Food) -> Result<Food, ()>;
     fn delete(&self, id: i32) -> Result<(), ()>;
 }
 
-struct FoodRepository {}
+pub struct FoodRepository {}
 
 impl Repository for FoodRepository {
     fn get(&self, id: i32) -> Result<Food, ()> {
@@ -26,18 +26,23 @@ impl Repository for FoodRepository {
     }
 
     fn get_all(&self) -> Result<Vec<Food>, ()> {
-        let food = Food {
-            id: 1,
-            name: "get all".to_string(),
-            ingestion: IngestionType::EAT,
-            carbs: 1,
-            calories: 1,
-            proteins: 1,
-            electrolytes: false,
-            comment: "get all".to_string(),
-        };
+        let mut foods = Vec::new();
 
-        Ok(vec![food])
+        for i in 1..=5 {
+            foods.push(
+            Food {
+                id: i,
+                name: i.to_string(),
+                ingestion: IngestionType::EAT,
+                carbs: i,
+                calories: i,
+                proteins: i,
+                electrolytes: false,
+                comment: i.to_string(),
+            });
+        }
+
+        Ok(foods)
     }
 
     fn save(&self, food: Food) -> Result<Food, ()> {

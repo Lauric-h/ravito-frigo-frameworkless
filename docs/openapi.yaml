@@ -23,7 +23,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FoodListDTO'
+                                $ref: '#/components/schemas/FoodList'
         post:
             description: Add new food
             requestBody:
@@ -31,7 +31,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/FoodDTO'
+                            $ref: '#/components/schemas/Food'
             responses:
                 201:
                     description: Food successfully created
@@ -55,7 +55,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FoodDTO'
+                                $ref: '#/components/schemas/Food'
                 404:
                     $ref: '#/components/responses/ResourceNotFound'
         put:
@@ -65,14 +65,14 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/FoodDTO'
+                            $ref: '#/components/schemas/Food'
             responses:
                 200:
                     description: Food was successfully updated
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FoodDTO'
+                                $ref: '#/components/schemas/Food'
                 400:
                     $ref: '#/components/responses/IncorrectPayload'
                 404:
@@ -87,7 +87,7 @@ paths:
 
 components:
     schemas:
-        FoodDTO:
+        Food:
             type: object
             properties:
                 id:
@@ -116,13 +116,13 @@ components:
                 comment:
                     type: string
                     nullable: true
-        FoodListDTO:
+        FoodList:
             type: object
             properties:
                 foods:
                     type: array
                     items:
-                        $ref: '#/components/schemas/FoodDTO'
+                        $ref: '#/components/schemas/Food'
     responses:
         IncorrectPayload:
             description: Incorrect payload
