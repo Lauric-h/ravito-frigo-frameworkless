@@ -14,6 +14,21 @@ fn main() {
     let listener = TcpListener::bind(format!("{}:{}", SERVER_ADDRESS, SERVER_PORT).to_string()).unwrap();
     println!("Server listening on port {}", SERVER_PORT);
 
+
+    let food = Food {
+        id: 0,
+        name: "".to_string(),
+        ingestion: IngestionType::EAT,
+        carbs: 0,
+        calories: 0,
+        proteins: 0,
+        electrolytes: false,
+        comment: "".to_string(),
+    };
+
+    let s = serde_json::to_string(&food);
+    println!("{:?}", s);
+
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
@@ -38,6 +53,7 @@ fn handle_client(mut stream: TcpStream) {
                 r if r.starts_with("GET /health") => {
                     println!("Received request to /health");
                     "Health check OK".to_string()
+
                 },
                 _ => "Not found".to_string()
             };

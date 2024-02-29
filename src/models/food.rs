@@ -1,3 +1,6 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Food {
     pub(crate) id: i32,
     pub(crate) name: String,
@@ -9,6 +12,7 @@ pub struct Food {
     pub(crate) comment: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub(crate) enum IngestionType {
     EAT,
     DRINK
