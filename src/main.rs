@@ -1,5 +1,3 @@
-extern crate core;
-
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use crate::models::food::IngestionType;
