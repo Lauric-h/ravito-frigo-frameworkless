@@ -12,7 +12,7 @@ pub struct FoodRepository {}
 impl Repository for FoodRepository {
     fn get(&self, id: i32) -> Result<Food, ()> {
         let food = Food {
-            id: 1,
+            id: id.clone(),
             name: "get".to_string(),
             ingestion: IngestionType::EAT,
             carbs: 1,
