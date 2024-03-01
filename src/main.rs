@@ -39,6 +39,7 @@ fn handle_client(mut stream: TcpStream) {
 
             let (status_line, content) = match &*request {
                 r if r.starts_with("GET /ping") => handle_ping_request(),
+                r if r.starts_with("GET /foods/") => handle_get_request(r),
                 r if r.starts_with("GET /foods") => handle_get_all_request(),
                 _ => (NOT_FOUND_RESPONSE.to_string(), "404 Not found".to_string())
             };
@@ -57,3 +58,15 @@ fn handle_get_all_request() -> (String, String) {
 
     ((OK_RESPONSE).to_string(), serde_json::to_string(&foods).unwrap())
 }
+
+fn extract_id_from_request(request: &str) -> &str {
+    request.split("/").nth(2).unwrap_or_default().split_whitespace().next().unwrap_or_default()
+}
+
+fn handle_get_request(request: &str) -> (String, String) {
+    let id = extract_id_from_request(request).parse::<i32>().unwrap();
+    let food = food_repository::FoodRepository{}.get(id).unwrap();
+
+    (OK_RESPONSE.to_string(), serde_json::to_string(&food).unwrap())
+}
+
