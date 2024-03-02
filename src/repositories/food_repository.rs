@@ -58,18 +58,20 @@ impl Repository for FoodRepository {
 
     fn save(&mut self, food: Food) -> Result<(), ()> {
         self.conn.exec_drop(
-            "INSERT INTO frigo(name, ingestion, carbs, calories, proteins, electrolytes, comment) \
+            "INSERT INTO foods(name, ingestion, carbs, calories, proteins, electrolytes, comment) \
             VALUES(:name, :ingestion, :carbs, :calories, :proteins, :electrolytes, :comment)",
             params! {
                 "name" => food.name,
-                "ingestion" => "todo",
+                "ingestion" => "EAT",
                 "carbs" => food.carbs,
                 "calories" => food.calories,
                 "proteins" => food.proteins,
                 "electrolytes" => food.electrolytes,
                 "comment" => food.comment
             }
-        ).unwrap_or_default();
+        ).expect("aaa");
+
+        println!("oui");
 
         Ok(())
     }
