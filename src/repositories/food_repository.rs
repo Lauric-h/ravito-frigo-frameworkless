@@ -47,14 +47,14 @@ impl Repository for FoodRepository {
 
     fn save(&self, food: Food) -> Result<Food, ()> {
         let food = Food {
-            id: 1,
-            name: "save".to_string(),
-            ingestion: IngestionType::EAT,
-            carbs: 1,
-            calories: 1,
-            proteins: 1,
-            electrolytes: false,
-            comment: "save".to_string(),
+            id: food.id,
+            name: food.name,
+            ingestion: food.ingestion,
+            carbs: food.carbs,
+            calories: food.calories,
+            proteins: food.proteins,
+            electrolytes: food.electrolytes,
+            comment: food.comment
         };
 
         Ok(food)
