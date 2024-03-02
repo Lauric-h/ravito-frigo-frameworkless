@@ -4,6 +4,7 @@ pub trait Repository {
     fn get(&self, id: i32) -> Result<Food, ()>;
     fn get_all(&self) -> Result<Vec<Food>, ()>;
     fn save(&self, food: Food) -> Result<Food, ()>;
+    fn update(&self, id: i32, food: Food) -> Result<Food, ()>;
     fn delete(&self, id: i32) -> Result<(), ()>;
 }
 
@@ -46,6 +47,21 @@ impl Repository for FoodRepository {
     }
 
     fn save(&self, food: Food) -> Result<Food, ()> {
+        let food = Food {
+            id: food.id,
+            name: food.name,
+            ingestion: food.ingestion,
+            carbs: food.carbs,
+            calories: food.calories,
+            proteins: food.proteins,
+            electrolytes: food.electrolytes,
+            comment: food.comment
+        };
+
+        Ok(food)
+    }
+
+    fn update(&self, id: i32, food: Food) -> Result<Food, ()> {
         let food = Food {
             id: food.id,
             name: food.name,
