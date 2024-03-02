@@ -1,14 +1,24 @@
+use mysql::{params, Pool, PooledConn};
+use mysql::prelude::Queryable;
 use crate::models::food::*;
 
 pub trait Repository {
     fn get(&self, id: i32) -> Result<Food, ()>;
     fn get_all(&self) -> Result<Vec<Food>, ()>;
-    fn save(&self, food: Food) -> Result<Food, ()>;
+    fn save(&mut self, food: Food) -> Result<(), ()>;
     fn update(&self, id: i32, food: Food) -> Result<Food, ()>;
     fn delete(&self, id: i32) -> Result<(), ()>;
 }
 
-pub struct FoodRepository {}
+pub struct FoodRepository {
+    conn: PooledConn
+}
+
+impl FoodRepository {
+    pub fn new(conn: PooledConn) -> Self {
+        Self { conn }
+    }
+}
 
 impl Repository for FoodRepository {
     fn get(&self, id: i32) -> Result<Food, ()> {
@@ -46,19 +56,22 @@ impl Repository for FoodRepository {
         Ok(foods)
     }
 
-    fn save(&self, food: Food) -> Result<Food, ()> {
-        let food = Food {
-            id: food.id,
-            name: food.name,
-            ingestion: food.ingestion,
-            carbs: food.carbs,
-            calories: food.calories,
-            proteins: food.proteins,
-            electrolytes: food.electrolytes,
-            comment: food.comment
-        };
+    fn save(&mut self, food: Food) -> Result<(), ()> {
+        self.conn.exec_drop(
+            "INSERT INTO frigo(name, ingestion, carbs, calories, proteins, electrolytes, comment) \
+            VALUES(:name, :ingestion, :carbs, :calories, :proteins, :electrolytes, :comment)",
+            params! {
+                "name" => food.name,
+                "ingestion" => "todo",
+                "carbs" => food.carbs,
+                "calories" => food.calories,
+                "proteins" => food.proteins,
+                "electrolytes" => food.electrolytes,
+                "comment" => food.comment
+            }
+        ).unwrap_or_default();
 
-        Ok(food)
+        Ok(())
     }
 
     fn update(&self, id: i32, food: Food) -> Result<Food, ()> {
