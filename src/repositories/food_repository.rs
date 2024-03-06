@@ -7,7 +7,7 @@ pub trait Repository {
     fn get_all(&self) -> Result<Vec<Food>, ()>;
     fn save(&mut self, food: Food) -> Result<(), ()>;
     fn update(&self, id: i32, food: Food) -> Result<Food, ()>;
-    fn delete(&self, id: i32) -> Result<(), ()>;
+    fn delete(&mut self, id: i32) -> Result<(), ()>;
 }
 
 pub struct FoodRepository {
@@ -56,6 +56,8 @@ impl Repository for FoodRepository {
         Ok(foods)
     }
 
+    // TODO - get back inserted result
+    // TODO - handle error
     fn save(&mut self, food: Food) -> Result<(), ()> {
         let result= self.conn.exec_drop(
             "INSERT INTO foods(name, ingestion, carbs, calories, proteins, electrolytes, comment) \
@@ -75,6 +77,7 @@ impl Repository for FoodRepository {
         Ok(result.unwrap())
     }
 
+    // TODO
     fn update(&self, id: i32, food: Food) -> Result<Food, ()> {
         let food = Food {
             id: food.id,
@@ -90,7 +93,13 @@ impl Repository for FoodRepository {
         Ok(food)
     }
 
-    fn delete(&self, id: i32) -> Result<(), ()> {
+    // TODO - if id not found ?
+    // TODO - Handle error
+    fn delete(&mut self, id: i32) -> Result<(), ()> {
+        let stmt = self.conn.prep("DELETE FROM foods WHERE id = :id").unwrap();
+        self.conn.exec_drop(&stmt, params! {
+            "id" => id,
+        }).expect("TODO: panic message");
         Ok(())
     }
 }
