@@ -82,7 +82,6 @@ fn extract_request_body(request: &str) -> Result<Food, serde_json::Error> {
 
 fn handle_post_request(repository: &mut FoodRepository, request: &str) -> (String, String) {
     let food = extract_request_body(request).unwrap();
-    println!("{:?}", food);
     repository.save(food).expect("TODO: panic message");
 
     // (CREATED_RESPONSE.to_string(), serde_json::to_string(&saved_food).unwrap())

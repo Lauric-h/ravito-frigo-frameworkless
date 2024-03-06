@@ -1,3 +1,5 @@
+use mysql::prelude::FromValue;
+use mysql::Value;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -17,3 +19,4 @@ pub(crate) enum IngestionType {
     EAT,
     DRINK
 }
+

@@ -57,7 +57,7 @@ impl Repository for FoodRepository {
     }
 
     fn save(&mut self, food: Food) -> Result<(), ()> {
-        self.conn.exec_drop(
+        let result= self.conn.exec_drop(
             "INSERT INTO foods(name, ingestion, carbs, calories, proteins, electrolytes, comment) \
             VALUES(:name, :ingestion, :carbs, :calories, :proteins, :electrolytes, :comment)",
             params! {
@@ -69,11 +69,10 @@ impl Repository for FoodRepository {
                 "electrolytes" => food.electrolytes,
                 "comment" => food.comment
             }
-        ).expect("aaa");
+        );
+        println!("{}", self.conn.last_insert_id());
 
-        println!("oui");
-
-        Ok(())
+        Ok(result.unwrap())
     }
 
     fn update(&self, id: i32, food: Food) -> Result<Food, ()> {
