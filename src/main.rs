@@ -46,6 +46,7 @@ fn handle_client(mut stream: TcpStream, repository: &mut FoodRepository) {
                 r if r.starts_with("PUT /foods/") => handle_put_request(repository, r),
                 r if r.starts_with("GET /foods") => handle_get_all_request(repository),
                 r if r.starts_with("POST /foods") => handle_post_request(repository, r),
+                r if r.starts_with("DELETE /foods/") => handle_delete_request(repository, r),
                 _ => (NOT_FOUND_RESPONSE.to_string(), "404 Not found".to_string())
             };
             stream.write_all(format!("{}{}", status_line, content).as_bytes()).unwrap();
@@ -80,10 +81,13 @@ fn extract_request_body(request: &str) -> Result<Food, serde_json::Error> {
     serde_json::from_str(request.split("\r\n\r\n").last().unwrap_or_default())
 }
 
+// TODO - handle error
+// TODO - handle correct response from repo
 fn handle_post_request(repository: &mut FoodRepository, request: &str) -> (String, String) {
     let food = extract_request_body(request).unwrap();
     repository.save(food).expect("TODO: panic message");
 
+    // TODO
     // (CREATED_RESPONSE.to_string(), serde_json::to_string(&saved_food).unwrap())
     (CREATED_RESPONSE.to_string(), "Ok".to_string())
 }
@@ -95,5 +99,13 @@ fn handle_put_request(repository: &FoodRepository, request: &str) -> (String, St
     let saved_food = repository.update(id, food).unwrap();
 
     (OK_RESPONSE.to_string(), serde_json::to_string(&saved_food).unwrap())
+}
+
+// TODO - handle error
+fn handle_delete_request(repository: &mut FoodRepository, request: &str) -> (String, String) {
+    let id = extract_id_from_request(request).parse::<i32>().unwrap();
+    repository.delete(id).expect("nope");
+
+    (OK_RESPONSE.to_string(), "OK".to_string())
 }
 
