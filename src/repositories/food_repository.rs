@@ -4,7 +4,7 @@ use crate::models::food::*;
 
 pub trait Repository {
     fn get(&self, id: i32) -> Result<Food, ()>;
-    fn get_all(&self) -> Result<Vec<Food>, ()>;
+    fn get_all(&mut self) -> Result<Vec<Food>, ()>;
     fn save(&mut self, food: Food) -> Result<(), ()>;
     fn update(&self, id: i32, food: Food) -> Result<Food, ()>;
     fn delete(&mut self, id: i32) -> Result<(), ()>;
@@ -36,24 +36,25 @@ impl Repository for FoodRepository {
         Ok(food)
     }
 
-    fn get_all(&self) -> Result<Vec<Food>, ()> {
-        let mut foods = Vec::new();
+    // TODO - handle errors
+    // TODO - handle Ingestion
+    fn get_all(&mut self) -> Result<Vec<Food>, ()> {
+        let res = self.conn.query_map(
+            "SELECT id, name, carbs, calories, proteins, electrolytes, comment FROM foods",
+            |(id, name, carbs, calories, proteins, electrolytes, comment)|
+                Food {
+                    id,
+                    name,
+                    ingestion: IngestionType::EAT,
+                    carbs,
+                    calories,
+                    proteins,
+                    electrolytes,
+                    comment
+                }
+        ).expect("Query failed");
 
-        for i in 1..=5 {
-            foods.push(
-            Food {
-                id: i,
-                name: i.to_string(),
-                ingestion: IngestionType::EAT,
-                carbs: i,
-                calories: i,
-                proteins: i,
-                electrolytes: false,
-                comment: i.to_string(),
-            });
-        }
-
-        Ok(foods)
+        Ok(res)
     }
 
     // TODO - get back inserted result
