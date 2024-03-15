@@ -69,7 +69,7 @@ fn extract_id_from_request(request: &str) -> &str {
     request.split("/").nth(2).unwrap_or_default().split_whitespace().next().unwrap_or_default()
 }
 
-fn handle_get_request(repository: &FoodRepository, request: &str) -> (String, String) {
+fn handle_get_request(repository: &mut FoodRepository, request: &str) -> (String, String) {
     let id = extract_id_from_request(request).parse::<i32>().unwrap();
     let food = repository.get(id).unwrap();
 
