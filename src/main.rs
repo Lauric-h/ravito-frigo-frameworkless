@@ -59,7 +59,7 @@ fn handle_ping_request() -> (String, String) {
     (OK_RESPONSE.to_string(), String::from("pong"))
 }
 
-fn handle_get_all_request(repository: &FoodRepository) -> (String, String) {
+fn handle_get_all_request(repository: &mut FoodRepository) -> (String, String) {
     let foods = repository.get_all().unwrap();
 
     ((OK_RESPONSE).to_string(), serde_json::to_string(&foods).unwrap())
