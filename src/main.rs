@@ -92,7 +92,7 @@ fn handle_post_request(repository: &mut FoodRepository, request: &str) -> (Strin
     (CREATED_RESPONSE.to_string(), "Ok".to_string())
 }
 
-fn handle_put_request(repository: &FoodRepository, request: &str) -> (String, String) {
+fn handle_put_request(repository: &mut FoodRepository, request: &str) -> (String, String) {
     let id = extract_id_from_request(request).parse::<i32>().unwrap();
     let food = extract_request_body(request).unwrap();
 
