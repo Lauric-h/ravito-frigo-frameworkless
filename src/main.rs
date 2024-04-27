@@ -60,9 +60,11 @@ fn handle_ping_request() -> (String, String) {
 }
 
 fn handle_get_all_request(repository: &mut FoodRepository) -> (String, String) {
-    let foods = repository.get_all().unwrap();
-
-    ((OK_RESPONSE).to_string(), serde_json::to_string(&foods).unwrap())
+    let foods = match repository.get_all() {
+        Ok(foods) => ((OK_RESPONSE).to_string(), serde_json::to_string(&foods).unwrap()),
+        Err(e) => ((NOT_FOUND_RESPONSE).to_string(), e.to_string()),
+    };
+    foods
 }
 
 fn extract_id_from_request(request: &str) -> &str {

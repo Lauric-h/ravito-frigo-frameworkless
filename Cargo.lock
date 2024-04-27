@@ -471,6 +471,7 @@ dependencies = [
 name = "frigo"
 version = "0.1.0"
 dependencies = [
+ "log",
  "mysql",
  "serde",
  "serde_json",

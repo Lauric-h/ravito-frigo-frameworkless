@@ -1,10 +1,11 @@
-use mysql::{params, Pool, PooledConn};
+use mysql::{Error, params, Pool, PooledConn};
 use mysql::prelude::Queryable;
+use log::error;
 use crate::models::food::*;
 
 pub trait Repository {
     fn get(&mut self, id: i32) ->  Result<Option<Food>, mysql::error::Error>;
-    fn get_all(&mut self) -> Result<Vec<Food>, ()>;
+    fn get_all(&mut self) -> Result<Vec<Food>, mysql::error::Error>;
     fn save(&mut self, food: Food) -> Result<(), ()>;
     fn update(&mut self, id: i32, food: Food) -> Result<(), ()>;
     fn delete(&mut self, id: i32) -> Result<(), ()>;
@@ -46,9 +47,9 @@ impl Repository for FoodRepository {
 
     // TODO - handle errors
     // TODO - handle Ingestion
-    fn get_all(&mut self) -> Result<Vec<Food>, ()> {
+    fn get_all(&mut self) -> Result<Vec<Food>, mysql::error::Error> {
         let res = self.conn.query_map(
-            "SELECT id, name, carbs, calories, proteins, electrolytes, comment FROM foods",
+            "SELECT id, name, carbs, calories, proteins, electrolytes, comment FROM cuicui",
             |(id, name, carbs, calories, proteins, electrolytes, comment)|
                 Food {
                     id,
@@ -60,8 +61,7 @@ impl Repository for FoodRepository {
                     electrolytes,
                     comment
                 }
-        ).expect("Query failed");
-
+        )?;
         Ok(res)
     }
 
