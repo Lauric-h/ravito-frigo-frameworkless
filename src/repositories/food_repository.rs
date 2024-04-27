@@ -3,7 +3,7 @@ use mysql::prelude::Queryable;
 use crate::models::food::*;
 
 pub trait Repository {
-    fn get(&mut self, id: i32) -> Result<Food, ()>;
+    fn get(&mut self, id: i32) ->  Result<Option<Food>, mysql::error::Error>;
     fn get_all(&mut self) -> Result<Vec<Food>, ()>;
     fn save(&mut self, food: Food) -> Result<(), ()>;
     fn update(&mut self, id: i32, food: Food) -> Result<(), ()>;
@@ -24,26 +24,24 @@ impl Repository for FoodRepository {
     // TODO - handle errors
     // TODO - handle id not found
     // TODO - handle ingestion
-    fn get(&mut self, id: i32) -> Result<Food, ()> {
-        let res = self.conn.exec_first(
+    fn get(&mut self, id: i32) -> Result<Option<Food>, mysql::error::Error> {
+        let row = self.conn.exec_first(
             "SELECT id, name, carbs, calories, proteins, electrolytes, comment FROM foods WHERE id = :id",
             params! {
                 "id" => id
             }
-        ).map(|row| {
-            row.map(|(id, name, carbs, calories, proteins, electrolytes, comment)| Food {
-                id,
-                name,
-                ingestion: IngestionType::EAT,
-                carbs,
-                calories,
-                proteins,
-                electrolytes,
-                comment
-            }).unwrap()
-        });
+        )?;
 
-       Ok(res.unwrap())
+        Ok(row.map(|(id, name, carbs, calories, proteins, electrolytes, comment)| Food {
+            id,
+            name,
+            ingestion: IngestionType::EAT,
+            carbs,
+            calories,
+            proteins,
+            electrolytes,
+            comment
+        }))
     }
 
     // TODO - handle errors
